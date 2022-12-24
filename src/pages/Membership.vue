@@ -132,7 +132,7 @@
                       <tr class="text-white">
                         <td width="50%" class="text-left">Total Price</td>
                         <td width="50%" class="text-left">
-                          Rp. {{ formatPrice(booking_detail.total_price) }}
+                          Rp. {{ formatPrice(booking_detail.total_price+booking_detail.total_tax_price) }}
                         </td>
                       </tr>
                     </table>

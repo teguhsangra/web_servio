@@ -66,7 +66,7 @@
                     <i class="fa fa-map-marker"></i> {{ location_name }}
                   </h3>
                   <ul class="text-white">
-                    <li>4 Pax</li>
+                    <li>{{ item.number_of_workstation }} Pax</li>
                     <li>High Speed Wireless Internet</li>
                     <li>Audio-Visual Equipment</li>
                     <li>User Friendly Video Conference Facilities</li>

@@ -86,7 +86,7 @@
                     <br />
                     <b class="text-white font-weight-bold"
                       >Rp.{{
-                        formatPrice(item.total_price + item.total_tax_price)
+                        formatPrice(item.total_price + item.total_service_charge + item.total_tax_price + item.total_additional_charge+item.total_service_charge_additional_charge+item.security_deposit+item.stamp_duty+item.round_price)
                       }}</b
                     >
                   </p>
