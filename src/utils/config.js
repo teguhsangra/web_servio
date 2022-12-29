@@ -1,8 +1,8 @@
 let baseUrl = '';
 
-baseUrl = 'http://localhost:8080/api/';
+// baseUrl = 'http://localhost:8080/api/';
 
-// baseUrl = 'https://servio.rakomsis.com/api/';
+baseUrl = 'https://servio.rakomsis.com/api/';
 
 export const Login = baseUrl + 'login';
 export const Logout = baseUrl + 'logout';
