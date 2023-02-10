@@ -12,8 +12,22 @@
             <div class="row">
               <div class="col-lg-10 col-xl-10 mx-auto">
                 <h2 class="text-center text-white">Login</h2>
-
-                <form class="mt-5" @submit.prevent="userLogin">
+                <a v-if="isMember"
+                @click="changeLoginStatus()"
+                  type="submit"
+                  class="
+                    btn btn-outline-secondary
+                    text-uppercase
+                    mt-3
+                    mb-2
+                    shadow-sm
+                    text
+                  "
+                  style="font-weight: 600"
+                >
+                  <span class="fa fa-arrow-left"></span>
+                </a>
+                <form v-if="isMember" class="mt-5" @submit.prevent="userLogin">
                   <div class="form-group mb-3">
                     <input
                       v-model="user.email"
@@ -99,6 +113,40 @@
                     </p>
                   </div>
                 </form>
+                <div v-else>
+                    <a
+                    @click="loginStatus('guest')"
+                    type="submit"
+                    class="
+                      btn btn-block btn-outline-primary
+                      text-uppercase
+                      mt-3
+                      mb-2
+                      shadow-sm
+                      text
+                    "
+                    style="font-weight: 600"
+                  >
+                    Login as guest
+                  </a>
+
+                    <a
+                    @click="loginStatus('member')"
+                      type="submit"
+                      class="
+                        btn btn-warning btn-block
+                        text-uppercase
+                        mt-3
+                        mb-2
+                        shadow-sm
+                        text
+                      "
+                      style="font-weight: 600"
+                      :disabled="loading"
+                    >
+                      Login as member
+                    </a>
+                </div>
               </div>
             </div>
           </div>
@@ -115,6 +163,7 @@ export default {
   name: "login-page",
   data() {
     return {
+      isMember:false,
       loading: false,
       user: {
         email: "",
@@ -129,6 +178,34 @@ export default {
   methods: {
     closeAlert: function () {
       this.alertOpen = false;
+    },
+    loginStatus(status){
+      if(status == 'guest'){
+        this.$store.dispatch("auth/guest").then( 
+        (res) => {
+            
+            if(res == true){
+              this.$router.push("/");
+            }
+        },
+        (error) => {
+          this.loading = false;
+          Swal.fire({
+            text: "Email atau password anda salah",
+            icon: "warning",
+            customClass: {
+              confirmButton: "btn fw-bold btn-danger",
+            },
+          });
+        }
+      );
+      }else if(status == 'member'){
+        console.log(status);
+        this.isMember = true;
+      }
+    },
+    changeLoginStatus(){
+      this.isMember = false;
     },
     userLogin() {
       this.loading = true;

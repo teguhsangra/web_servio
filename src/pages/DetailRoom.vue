@@ -9,7 +9,14 @@
           <div class="row">
             <div class="col-md-6">
               <div class="location_area_box">
-                <img
+                <div v-if="rooms.default_photo != null">
+                  <img
+                    class="img-fluid frame-img"
+                    :src="'https://servio.rakomsis.com'+rooms.default_photo"
+                    alt="img"
+                  />
+                </div>
+                <img v-else
                   class="img-fluid frame-img"
                   src="../assets/image/banner/banner.jpeg"
                   alt="img"
@@ -23,7 +30,7 @@
                   <i class="fa fa-map-marker"></i> {{ location_name }}
                 </h3>
                 <ul class="text-white">
-                  <li>4 Pax</li>
+                  <li>{{ rooms.number_of_workstation }} Pax</li>
                   <li>High Speed Wireless Internet</li>
                   <li>Audio-Visual Equipment</li>
                   <li>User Friendly Video Conference Facilities</li>
@@ -146,11 +153,30 @@
         </div>
       </div>
     </section>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Information</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size:18px;"><b style="color:black">To proceed your booking please contact our CSR :</b></p>
+          </div>
+          <div class="modal-footer">
+            <a href="https://wa.me/08118300154?text=Hi%20Servio" class="btn btn-success" target="_blank" ><span class="fa fa-whatsapp fa-2x" style=" vertical-align: middle;"></span> Manhattan Square</a>
+            <a href="https://wa.me/08118696003?text=Hi%20Servio" class="btn btn-success" target="_blank" ><span class="fa fa-whatsapp fa-2x" style=" vertical-align: middle;"></span> South Quarter</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import RoomService from "../services/room.service";
-
+import $ from 'jquery';
 export default {
   name: "detail-rooms",
   location_name: "",
@@ -214,26 +240,34 @@ export default {
     },
     bookRoom() {
       let data = this.$route.query;
-      this.$router.push({
-        name: "booking",
-        query: {
-          roomId: data.id,
-          roomCategory: data.room_category_id,
-          locationId: data.location_id,
-          date: this.$CryptoJS.AES.encrypt(
-            this.form.start_date.toString(),
-            "123#$%"
-          ).toString(),
-          startTime: this.$CryptoJS.AES.encrypt(
-            this.form.start_time.toString(),
-            "123#$%"
-          ).toString(),
-          endTime: this.$CryptoJS.AES.encrypt(
-            this.form.end_time.toString(),
-            "123#$%"
-          ).toString(),
-        },
-      });
+      let id = this.$CryptoJS.AES.decrypt(data.id, "123#$%").toString(
+      this.$CryptoJS.enc.Utf8
+    );
+      if(id == 8  || id == 11){
+        this.$router.push({
+          name: "booking",
+          query: {
+            roomId: data.id,
+            roomCategory: data.room_category_id,
+            locationId: data.location_id,
+            date: this.$CryptoJS.AES.encrypt(
+              this.form.start_date.toString(),
+              "123#$%"
+            ).toString(),
+            startTime: this.$CryptoJS.AES.encrypt(
+              this.form.start_time.toString(),
+              "123#$%"
+            ).toString(),
+            endTime: this.$CryptoJS.AES.encrypt(
+              this.form.end_time.toString(),
+              "123#$%"
+            ).toString(),
+          },
+        });
+      }else{
+        $('#exampleModal').modal('show');
+      }
+      
     },
   },
 };

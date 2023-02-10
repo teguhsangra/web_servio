@@ -34,6 +34,7 @@
         >
           <ul class="nav navbar-nav menu_nav ml-auto">
             <li
+            v-if="currentMember"
               class="nav-item"
               :class="[$route.name === 'my-booking' ? 'active' : '']"
             >
@@ -42,6 +43,7 @@
               </router-link>
             </li>
             <li
+            v-if="currentMember"
               class="nav-item"
               :class="[$route.name === 'membership' ? 'active' : '']"
             >
@@ -49,8 +51,11 @@
                 <a class="nav-link">Membership</a>
               </router-link>
             </li>
+            <li v-else  class="nav-item">
+              <a class="nav-link" @click="logOut()">Back to MyServio</a>
+            </li>
 
-            <li class="nav-item submenu dropdown" v-if="currentUser">
+            <li class="nav-item submenu dropdown" v-if="currentMember">
               <a
                 href="#"
                 class="nav-link dropdown-toggle"
@@ -59,10 +64,9 @@
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                <div v-if="currentUser">
+                <div>
                   {{ currentUser.user.name }}
                 </div>
-                <div v-else>Profile</div>
               </a>
               <ul class="dropdown-menu">
                 <li
@@ -91,6 +95,9 @@ export default {
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
+    },
+    currentMember() {
+      return this.$store.state.auth.status.isMember;
     },
   },
   methods: {

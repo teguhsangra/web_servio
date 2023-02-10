@@ -26,10 +26,11 @@
               </div>
               <div class="card-body mt-3">
                 <form @submit.prevent="postBooking">
-                  <div class="row">
+
+                  <div class="row" v-if="currentMember">
                     <div class="col-md-12">
                       <div class="book_select_item">
-                        <Label class="text-white">Customer</Label>
+                        <Label class="text-white">Customer  <span style="color:red">*</span></Label>
                         <div class="input-group">
                           <select
                             v-model="form.customer_id"
@@ -53,7 +54,7 @@
                   </div>
                   <div
                     class="row"
-                    v-if="complimentary.total_available_complimentary > 0"
+                    v-if="complimentary.total_available_complimentary > 0 && currentMember"
                   >
                     <div class="col-md-12 mt-3">
                       <div class="book_select_item">
@@ -79,7 +80,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="row" v-if="currentMember">
                     <div class="col-md-12 mt-3">
                       <div class="book_select_item">
                         <Label class="text-white">Select Contact</Label>
@@ -94,6 +95,80 @@
                       </div>
                     </div>
                   </div>
+                  <div v-if="currentMember == false">
+                    <div class="row">
+                      <div class="col-md-12 mt-3">
+                        <div class="book_select_item">
+                          <Label class="text-white">Name Guest <span style="color:red">*</span> </Label>
+                          <div class="input-group">
+                            <input
+                              v-model="form.customer_name"
+                              type="text"
+                              class="form-control"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12 mt-3">
+                        <div class="book_select_item">
+                          <Label class="text-white">Email Guest  <span style="color:red">*</span></Label>
+                          <div class="input-group">
+                            <input
+                              v-model="form.customer_email"
+                              type="text"
+                              class="form-control"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12 mt-3">
+                        <div class="book_select_item">
+                          <Label class="text-white">Phone Guest  <span style="color:red">*</span></Label>
+                          <div class="input-group">
+                            <input
+                              v-model="form.customer_phone"
+                              type="number"
+                              class="form-control"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- <div class="row mt-2">
+                    <div class="col-md-12">
+                      <div class="book_select_item">
+                        <Label class="text-white">Select Room</Label>
+                        <div class="input-group">
+                          <select
+                            v-model="form.room_id"
+                            class="selectpicker form-control"
+                            style="z-index: 999"
+                            required
+                            @change="getData()"
+                          >
+                            <option value="" selected>Select Room</option>
+                            <option
+                              v-for="item in room"
+                              v-bind:value="item.id"
+                              v-bind:key="item.id"
+                            >
+                              {{ item.room_number }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div> -->
+
                   <div class="row">
                     <div class="col-md-12 mt-3">
                       <div class="book_select_item">
@@ -130,6 +205,7 @@
                         </div>
                       </div>
                     </div>
+                    
                     <div class="col-md-4">
                       <div class="book_select_item">
                         <Label class="text-white">End time</Label>
@@ -165,61 +241,67 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="book_select_item">
-                        <Label class="text-white">Select Room</Label>
-                        <div class="input-group">
-                          <select
-                            v-model="form.room_id"
-                            class="selectpicker form-control"
-                            style="z-index: 999"
-                            required
-                            @change="getData()"
-                          >
-                            <option value="" selected>Select Room</option>
-                            <option
-                              v-for="item in room"
-                              v-bind:value="item.id"
-                              v-bind:key="item.id"
-                            >
-                              {{ item.room_number }}
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12 mt-3">
-                      <div class="book_select_item">
-                        <Label class="text-white">Detail Price</Label>
-                        <div class="input-group">
-                          <input
-                            type="text"
-                            class="form-control"
-                            :value="formatPrice(form.detail_price)"
-                            disabled
+
+                  <div class="card mt-5">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <img v-if="rooms.default_photo != null"
+                          class="img-fluid frame-img"
+                          :src="'https://servio.rakomsis.com/'+rooms.default_photo"  width="200" height="200"
+                          alt="img"
                           />
+                          <img v-else class="img-fluid frame-img"
+                          src="../assets/image/banner/banner.jpeg"
+                          alt="img" />
+                        </div>
+                        <div class="col-md-8">
+                          <h3 style="color:black">{{ rooms.room_number }}</h3>
+                          <p style="font-size:14px">
+                            Time: {{form.start_time+' - '+form.end_time}}
+                            <br>
+                            {{form.length_of_term}} Hour(s)
+                            <br>
+                           <p> Room price: Rp.  <font style="font-weight:bold">{{ formatPrice(rooms.hourly_price) }}</font></p>
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col-md-12 mt-3">
-                      <div class="book_select_item">
-                        <Label class="text-white">Total Price</Label>
-                        <div class="input-group">
-                          <input
-                            type="text"
-                            class="form-control"
-                            :value="formatPrice(form.total_price)"
-                            disabled
-                          />
+
+                  <div class="card mt-2">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-12 mt-2">
+                          <h5 style="color:black">Pricing details</h5>
+                          <hr>
+                          <table width="100%" class="table table-borderless">
+                            <tr>
+                              <td style="padding-top: 1px;padding-bottom: 1px;">
+                                  <b style="color:black">TOTAL RENT</b>
+                              </td>
+                              <td class="text-right" style="padding-top: 1px;padding-bottom: 1px;">
+                                  <b style="color:black">Rp.{{ formatPrice(form.detail_price*form.length_of_term) }}</b>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="padding-top: 1px;padding-bottom: 1px;">
+                                  Tax (VAT/PPN) <span class="text-right">({{ formatPrice(tax_percentage*100) }}%)</span>
+                              </td>
+                              <td class="text-right" style="padding-top: 1px;padding-bottom: 1px;">
+                                  Rp.{{ formatPrice(form.total_tax_price) }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="padding-top: 1px;padding-bottom: 1px;"><b>Total Amount Due</b></td>
+                              <td class="text-right" style="padding-top: 1px;padding-bottom: 1px;"><b>Rp.{{ formatPrice(grand_total) }}</b></td>
+                          </tr>
+                          </table>
                         </div>
                       </div>
                     </div>
                   </div>
+                  
                   <div class="row">
                     <div class="col-md-12 mt-3">
                       <div class="book_tabel_item">
@@ -262,10 +344,20 @@ export default {
       office_hour_end: 17,
       length_of_term_after_office: 0,
       tax_percentage: 0.11,
+      grand_total:0,
+      rooms : {},
       form: {
         location_id: "",
         customer_id: "",
+        customer_status: 'N',
+        contact_new_status:'Y',
         contact_id: "",
+        customer_name:"",
+        customer_type:"COM",
+        customer_email:"",
+        customer_phone:"",
+        contact_status:"same_with_customer",
+        status_booking:"not_member",
         room_category_id: "",
         room_id: "",
         start_date: "",
@@ -273,7 +365,7 @@ export default {
         end_time: "",
         length_of_term: "",
         detail_price: 0,
-        tax_status: "include",
+        tax_status: "exclude",
         total_price: 0,
         total_tax_price: 0,
         complimentary_id: "",
@@ -285,6 +377,9 @@ export default {
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
+    },
+    currentMember() {
+      return this.$store.state.auth.status.isMember;
     },
   },
   mounted: function mounted() {
@@ -322,45 +417,54 @@ export default {
       this.$CryptoJS.enc.Utf8
     );
     this.form.end_time = end_time;
+    if(this.currentMember){
+      this.form.customer_status = 'Y';
+      this.form.contact_status = 'N';
+      this.form.status_booking = "member";
+      this.form.contact_id = this.currentUser.user.contact.id;
+      this.contact_name = this.currentUser.user.contact.name;
 
-    this.form.contact_id = this.currentUser.user.contact.id;
-    this.contact_name = this.currentUser.user.contact.name;
 
-    UserService.getDataContact().then(
-      (response) => {
-        var data = response.data.data;
-        this.customer = data;
-      },
-      (error) => {
-        this.content =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
-    );
+        UserService.getDataContact().then(
+        (response) => {
+          var data = response.data.data;
+          this.customer = data;
+        },
+        (error) => {
+          this.content =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+        }
+      );
 
+     
+
+    }
+    
     UserService.getDataRooms(location_id, room_category_id).then(
-      (response) => {
-        var data = response.data.data;
-        this.room = data;
-      },
-      (error) => {
-        this.content =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
-    );
+        (response) => {
+          var data = response.data.data;
+          this.room = data;
+        },
+        (error) => {
+          this.content =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+        }
+      );
+    
     this.calculateTime();
     this.checkAvail();
     RoomService.getDetailRoom(room_id).then(
       (response) => {
         var data = response.data.data;
-
+        this.rooms = data;
         this.form.room_id = data.id;
         this.form.detail_price = data.hourly_price;
         this.form.after_office_hourly_price = data.after_office_hourly_price;
@@ -406,7 +510,7 @@ export default {
 
       // this.checkAvail();
       // this.checkOfficeHour();
-      // this.countPrice();
+      this.countPrice();
     },
     getComplimentary() {
       var data = {
@@ -437,6 +541,7 @@ export default {
           var data = response.data.data;
           this.checkAvail();
           if (this.status != false) {
+            this.rooms = data;
             this.form.room_id = data.id;
             this.form.detail_price = data.hourly_price;
             this.form.after_office_hourly_price =
@@ -497,6 +602,7 @@ export default {
       var hour_of_end_time = 0;
       var minutes_of_end_time = 0;
       var length_of_term_after_office = 0;
+
       if (array_of_end_time.length > 1) {
         hour_of_end_time = parseInt(array_of_end_time[0]);
         minutes_of_end_time = parseInt(array_of_end_time[1]);
@@ -511,46 +617,17 @@ export default {
     },
     countPrice() {
       var quantity = 1;
-
+      var sub_total = 0;
       var total_price = 0;
       var total_tax_price = 0;
-
-      var sub_total = 0;
+      
       var grand_total = 0;
-      var temp_1 = 0;
-      var length = this.form.length_of_term - this.length_of_term_after_office;
-      if (this.length_of_term_after_office > 0) {
-        if (length > 0) {
-          sub_total =
-            sub_total +
-            this.form.detail_price *
-              (this.form.length_of_term -
-                this.form.total_use_complimentary -
-                this.length_of_term_after_office);
-
-          sub_total =
-            sub_total +
-            this.form.after_office_hourly_price *
-              this.length_of_term_after_office;
-        } else {
-          sub_total =
-            sub_total +
-            this.form.after_office_hourly_price *
-              this.length_of_term_after_office;
-        }
-      } else {
-        sub_total =
-          sub_total +
-          this.form.detail_price *
-            quantity *
-            (this.form.length_of_term - this.form.total_use_complimentary);
-      }
-
+      sub_total = sub_total + (this.form.detail_price * quantity * (this.form.length_of_term  - this.form.total_use_complimentary));
+    
       total_price = sub_total;
-      temp_1 = total_price;
-      total_price =
-        parseFloat(total_price) / (1 + parseFloat(this.tax_percentage));
-      total_tax_price = parseFloat(temp_1) - parseFloat(total_price);
+      total_tax_price = total_price * parseFloat(
+                    this.tax_percentage);
+
 
       total_price = Math.round(total_price);
       total_tax_price = Math.round(total_tax_price);
@@ -560,20 +637,32 @@ export default {
 
       grand_total =
         parseFloat(view_total_price_ac) + parseFloat(grand_total_tax);
+        
       this.form.total_tax_price = grand_total_tax;
 
-      this.form.total_price = grand_total;
+      this.form.total_price = total_price;
+      this.grand_total = grand_total;
     },
     postBooking() {
+      
+      
       if (this.status == true) {
         UserService.saveBooking(this.form).then(
           (response) => {
-            this.$router.push({
-              name: "my-booking",
-              params: {
-                status: true,
-              },
-            });
+            if(this.currentMember){
+              this.$router.push({
+                name: "my-booking",
+                params: {
+                  status: true,
+                },
+              });
+            }else{
+              this.$router.replace({
+                  name: 'home', 
+                  query: { status: true}
+              });
+            }
+            
           },
           (error) => {
             this.$toast.error("Error, Mohon dicoba kembali.");

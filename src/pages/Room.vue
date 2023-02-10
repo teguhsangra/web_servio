@@ -52,7 +52,14 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="location_area_box">
-                  <img
+                  <div v-if="item.default_photo != null">
+                    <img
+                      class="img-fluid frame-img"
+                      :src="'https://servio.rakomsis.com'+item.default_photo"
+                      alt="img"
+                    />
+                  </div>
+                  <img v-else
                     class="img-fluid frame-img"
                     src="../assets/image/banner/banner.jpeg"
                     alt="img"

@@ -69,6 +69,9 @@
                     <div v-else-if="item.status_name == 'complete'">
                       <span class="badge badge-success">Done</span>
                     </div>
+                    <div v-else>
+                      <span class="badge badge-danger">Cancel</span>
+                    </div>
                   </h4>
                 </div>
               </div>
@@ -210,6 +213,7 @@
         </div>
       </div>
     </div>
+
     <div
       id="modalFilter"
       class="modal fade"
@@ -334,6 +338,7 @@
         </div>
       </div>
     </div>
+    
   </div>
 </template>
 <script>

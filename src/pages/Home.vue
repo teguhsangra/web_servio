@@ -141,16 +141,40 @@
         </div>
       </div>
     </section>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Thank you For Your Booking at Servio</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="removeParams()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size:18px;"><b style="color:black">Please Contact us to confirm your booking :</b></p>
+          </div>
+          <div class="modal-footer">
+            <a href="https://wa.me/08118300154?text=Hi%20Servio" class="btn btn-success" data-dismiss="modal"><span class="fa fa-whatsapp fa-2x" style=" vertical-align: middle;"></span> Manhattan Square</a>
+            <a href="https://wa.me/08118696003?text=Hi%20Servio" class="btn btn-success"><span class="fa fa-whatsapp fa-2x" style=" vertical-align: middle;"></span> South Quarter</a>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- end section content area -->
   </div>
 </template>
 <script>
+import $ from 'jquery';
 import Swal from "sweetalert2";
 import UserService from "../services/user.service";
 export default {
   name: "Home",
   data() {
     return {
+      isAlert:false,
       locations: null,
       service_type: [],
       location_name: "",
@@ -162,6 +186,11 @@ export default {
     };
   },
   mounted() {
+    let data = this.$route.query;
+    
+    if (data.status == 'true') {
+      this.openPopUp();
+    }
     UserService.getDataLocations().then(
       (response) => {
         var data = response.data.data;
@@ -274,6 +303,21 @@ export default {
         });
       }
     },
+    openPopUp(){
+      console.log('tst');
+      $('#modalInfo').modal('show');
+      
+    },
+    removeParams(){
+     
+      this.$router.push(
+        {
+          path:'/',
+          query: { status: false}
+        }
+      )
+      
+    }
   },
 };
 </script>

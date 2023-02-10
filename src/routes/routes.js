@@ -25,6 +25,7 @@ const routes = [
     },
     {
         path: '/',
+        name:'home',
         component: Home
     },
     {
@@ -65,6 +66,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes,
 });
+
 router.beforeEach((to, from, next) => {
     const publicPages = ['/login', '/forgot-password', '/reset-password'];
     const authRequired = !publicPages.includes(to.path);
